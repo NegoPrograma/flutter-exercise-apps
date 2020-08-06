@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 
 void main() {
   runApp(
-    HomeScaffold(),
+    MaterialApp(home: HomeScaffold()),
   );
 }
 
@@ -12,11 +12,11 @@ class HomeScaffold extends StatefulWidget {
 }
 
 class _HomeScaffoldState extends State<HomeScaffold> {
-  String _motivational_text = "First text";
+  String _motivationalText = "First text";
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return 
+       Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.greenAccent,
           title: Padding(
@@ -35,21 +35,20 @@ class _HomeScaffoldState extends State<HomeScaffold> {
                 Image(
                   image: AssetImage("images/logo.png"),
                 ),
-                Text(_motivational_text),
+                Text(_motivationalText),
                 RaisedButton(
-                    onPressed: () {
-                      setState(() {
-                        _motivational_text =
-                            "Você consegue, não desiste não!!!";
-                      });
-                    },
-                    color: Colors.green[400],
-                    child: Text("Nova frase"))
+                  onPressed: () {
+                    setState(() {
+                      _motivationalText = "Você consegue, não desiste não!!!";
+                    });
+                  },
+                  color: Colors.green[400],
+                  child: Text("Nova frase"),
+                ),
               ],
             ),
           ),
         ),
-      ),
     );
   }
 }
