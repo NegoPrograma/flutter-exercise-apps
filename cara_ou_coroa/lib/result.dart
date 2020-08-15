@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class Result extends StatelessWidget {
   String result;
+  
   Result(this.result);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

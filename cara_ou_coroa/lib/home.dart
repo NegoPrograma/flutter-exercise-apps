@@ -8,6 +8,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  
   void _showResult(BuildContext context) {
     List<String> possibleResults = ["moeda_cara", "moeda_coroa"];
 
