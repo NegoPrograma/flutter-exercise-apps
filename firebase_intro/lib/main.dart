@@ -1,16 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() {
+void main() async {
   runApp(MyApp());
-  Firestore.instance.collection("users").document("score").setData({
-    "player1": "80",
-    "player2": "8120",
-  });
-}
+   Firestore db;
+    /**
+     * Salvar e atualizar dados no firebase é mole d++
+     * primeiro, criamos uma instancia do BD.
+     * Após isso, acessamos a coleção onde o dado ficará salvo
+     * dizemos qual é a chave do dado(ou seja, o que colocaremos
+     * numa função de busca pra retornar o dado)
+     * e depois, com o método setData, passamos
+     * um objeto do tipo Map para salvar as informações.
+     */
+    db = Firestore.instance;
+    db.collection("users").document("001").setData({
+      "nome": "isaac",
+      "idade": "20",
+    });
+
+    /**
+     * Porém, existe um problema grave ali em cima, você ta tendo que
+     * definir o ID(chave) previamente. num cenário real, isso é impossivel
+     * então ao invés de manualmente digitar a chave, usaremos o método
+     * add, que faz a mesma coisa que setData, mas ele gera
+     * uma chave única automatica para o nosso banco.
+     * 
+     * Mas e se a gente quiser editar esse valor???
+     * 
+     * Existem maneiras de se achar esse dado mesmo sem saber
+     * préviamente sua chave, um método é utilizando 
+     * o DocumentReference. já que o método add retorna justamente
+     * o id gerado, nós guardamos ele numa variavel do tipo document.
+     */
+
+    DocumentReference ref = await db.collection("users").add({
+      "nome": "chave automatica",
+      "idade": "999",
+    });
+    print(ref.documentID);
+  }
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
+ 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
