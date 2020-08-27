@@ -20,6 +20,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   File _image;
+  String _imageURL="";
   String _statusUpload = "Upload não iniciado";
 
   Future _getImage(String imageSource) async {
@@ -32,22 +33,50 @@ class _HomeState extends State<Home> {
     setState(() {
       _image = _image;
     });
-
-    
   }
 
   Future _uploadImage(File _image) async {
-    
     FirebaseStorage storage = FirebaseStorage.instance;
     StorageReference storageRoot = storage.ref();
-    StorageReference file = storageRoot.child("photos").child("photo2.jpg");
+    StorageReference file = storageRoot.child("photos").child("photo3.jpg");
 
-    file.putFile(_image);
+    StorageUploadTask task = file.putFile(_image);
+
+    //Controlar progresso do upload
+    task.events.listen((StorageTaskEvent storageEvent) {
+      if (storageEvent.type == StorageTaskEventType.progress) {
+        setState(() {
+          _statusUpload = "Em progresso";
+        });
+      } else if (storageEvent.type == StorageTaskEventType.success) {
+        setState(() {
+          _statusUpload = "Upload realizado com sucesso!";
+        });
+      }
+    });
+
+    //Recuperar url da imagem
+    task.onComplete.then((StorageTaskSnapshot snapshot) {
+      _recuperarUrlImagem(snapshot);
+    });
+  }
+
+  Future _recuperarUrlImagem(StorageTaskSnapshot snapshot) async {
+    _imageURL = await snapshot.ref.getDownloadURL();
+    print("URL: $_imageURL");
+    setState(() {
+      _imageURL = _imageURL;
+    });
   }
 
   dynamic setImage(File _image) {
     if (_image == null) return Container();
     return Image.file(_image);
+  }
+
+  dynamic _downloadImage(String url){
+    if(url != "") return Image.network(url);
+    return Container();
   }
 
   @override
@@ -57,6 +86,7 @@ class _HomeState extends State<Home> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+              Text(_statusUpload),
               RaisedButton(
                 onPressed: () {
                   _getImage("camera");
@@ -76,6 +106,7 @@ class _HomeState extends State<Home> {
                 child: Text("Fazer upload da imagem."),
               ),
               setImage(_image),
+              _downloadImage(_imageURL),
             ],
           ),
         ));
